@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developers — DevPel</title>
+    <link rel="stylesheet" href="{% static 'css/developers.css' %}">
+</head>
+
+<body>
+    <nav>
+        <a href="/dashboard" class="logo"><span class="dev">▶ Dev</span><span class="pel">Pel</span></a>
+        <form class="search" action="/dashboard" method="GET"><input type="text" name="q"
+                placeholder="Search projects, developers, skills…"></form>
+        <div class="navlinks">
+            <a href="/dashboard">Home</a>
+            <a href="/developers" style="color:#3b4ed6;">Explore</a>
+            <a href="/profile/{{ logged_user.id }}" class="btn-post">+ Post</a>
+            <a href="/profile/{{ logged_user.id }}" class="avatar-nav">{{ logged_user.initials }}</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="pagehead">
+            <div>
+                <h1>Developers</h1>
+                <p>Discover Palestinian developers by skill and stack.</p>
+            </div>
+            <form class="pagesearch" action="/developers" method="GET">
+                <input type="text" name="q" placeholder="🔍 Search developers…" value="{{ search }}">
+                {% if skill_filter %}<input type="hidden" name="skill" value="{{ skill_filter }}">{% endif %}
+            </form>
+        </div>
+
+        <div class="skillrow">
+            <a href="/developers?q={{ search }}" class="{% if not skill_filter %}active{% endif %}">All</a>
+            {% for skill in all_skills %}
+            <a href="/developers?skill={{ skill.name }}&q={{ search }}"
+                class="{% if skill_filter == skill.name %}active{% endif %}">{{ skill.name }}</a>
+            {% endfor %}
+        </div>
+
+        <div class="grid">
+            {% for dev, color in devs_with_color %}
+            <div class="devcard">
+                <div class="devtop">
+                    <div class="avatar-big" style="--avatar-color: {{ avatar_color }};">
+                        {{ dev.initials }}<span class="dot"></span></div>
+                    <div>
+                        <b>{{ dev.full_name }}</b>
+                        <span>@{{ dev.handle }}</span>
+                    </div>
+                </div>
+                <div class="devmeta">📍 {{ dev.location|default:"Palestine" }} · {{ dev.role_title|default:"Developer"
+                    }}</div>
+                <div class="devskills">
+                    {% for us in dev.skills.all %}<span>{{ us.skill.name }}</span>{% endfor %}
+                </div>
+                <a href="/profile/{{ dev.id }}" class="viewbtn">View profile</a>
+            </div>
+            {% empty %}
+            <p style="color:#9aa1b5;">No developers found.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+
+</html>
