@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevPel — Sign in</title>
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body { font-family: -apple-system, 'Segoe UI', Arial, sans-serif; }
+  .wrap { display:flex; min-height:100vh; }
+  .left {
+    flex:1; background: linear-gradient(160deg, #1d2c6b 0%, #0b1330 100%);
+    color:#fff; padding:60px; display:flex; flex-direction:column; justify-content:center;
+  }
+  .logo { display:flex; align-items:center; gap:8px; font-size:22px; font-weight:800; margin-bottom:50px; }
+  .logo .dev { color:#fff; } .logo .pel { color:#6d8bff; }
+  .left h1 { font-size:42px; font-weight:800; line-height:1.2; max-width:520px; }
+  .left p { color:#aab4e0; font-size:16px; margin-top:18px; max-width:460px; line-height:1.5; }
+  .pills { margin-top:30px; display:flex; gap:10px; flex-wrap:wrap; }
+  .pill { background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:#cdd6f4; font-family:monospace; font-size:13px; padding:6px 14px; border-radius:8px; }
+  .stats { margin-top:50px; display:flex; gap:50px; border-top:1px solid rgba(255,255,255,0.15); padding-top:24px; max-width:460px;}
+  .stats div b { display:block; font-size:20px; color:#fff; }
+  .stats div span { font-size:12px; color:#7e8ad1; font-family:monospace; letter-spacing:0.5px; }
+  .right { flex:1; background:#f4f6fb; display:flex; align-items:center; justify-content:center; padding:40px; }
+  .panel { width:100%; max-width:420px; }
+  .tabs { display:flex; background:#e7eaf3; border-radius:10px; padding:4px; margin-bottom:28px; }
+  .tabs a { flex:1; text-align:center; padding:10px; border-radius:8px; text-decoration:none; color:#5a6178; font-weight:600; font-size:14px; }
+  .tabs a.active { background:#fff; color:#11142b; box-shadow:0 1px 3px rgba(0,0,0,0.1); }
+  .panel h2 { font-size:26px; font-weight:800; color:#11142b; }
+  .panel p.sub { color:#6b7280; font-size:14px; margin-top:6px; margin-bottom:24px; }
+  label { display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px; }
+  input { width:100%; padding:12px 14px; border:1.5px solid #e1e5f0; border-radius:10px; font-size:14px; margin-bottom:16px; }
+  input:focus { outline:none; border-color:#3b4ed6; }
+  .err { color:#dc2626; font-size:12px; margin-top:-12px; margin-bottom:14px; }
+  .btn { width:100%; padding:13px; border:none; border-radius:10px; font-size:15px; font-weight:700; cursor:pointer; }
+  .btn-primary { background:#3b4ed6; color:#fff; }
+  .btn-primary:hover { background:#2f3fc0; }
+  .or { text-align:center; color:#9aa1b5; font-size:12px; margin:18px 0; }
+  .btn-github { background:#fff; border:1.5px solid #e1e5f0; color:#11142b; display:flex; align-items:center; justify-content:center; gap:8px; }
+  .terms { text-align:center; font-size:11px; color:#9aa1b5; margin-top:18px; line-height:1.5; }
+  .terms a { color:#3b4ed6; text-decoration:none; }
+  @media (max-width: 900px) {
+    .wrap { flex-direction:column; }
+    .left { padding:40px 24px; }
+    .left h1 { font-size:30px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="left">
+    <div class="logo"><span class="dev">▶ Dev</span><span class="pel">Pel</span></div>
+    <h1>Where Palestinian developers build in the open.</h1>
+    <p>Showcase your projects, find collaborators, and grow with a community that has your back.</p>
+    <div class="pills">
+      <span class="pill">Django</span><span class="pill">React</span>
+      <span class="pill">Flutter</span><span class="pill">Node.js</span><span class="pill">PostgreSQL</span>
+    </div>
+    <div class="stats">
+      <div><b>{{ stats.developers }}</b><span>DEVELOPERS</span></div>
+      <div><b>{{ stats.projects }}</b><span>PROJECTS</span></div>
+      <div><b>{{ stats.cities }}</b><span>CITIES</span></div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="panel" id="signin-panel">
+      <div class="tabs">
+        <a href="#" class="active" onclick="showTab('signin');return false;">Sign in</a>
+        <a href="#" onclick="showTab('register');return false;">Create account</a>
+      </div>
+
+      <!-- SIGN IN -->
+      <div id="signin">
+        <h2>Welcome back</h2>
+        <p class="sub">Sign in to your developer account.</p>
+        <form action="/login" method="POST">
+          {% csrf_token %}
+          <label>Email</label>
+          <input type="email" name="email" placeholder="you@example.com">
+          {% if login_errors.email %}<div class="err">{{ login_errors.email }}</div>{% endif %}
+          <label>Password</label>
+          <input type="password" name="password" placeholder="••••••••••">
+          <button type="submit" class="btn btn-primary">Sign in →</button>
+        </form>
+        <div class="or">or continue with</div>
+        <button class="btn btn-github" type="button" onclick="alert('GitHub OAuth not required for exam scope.')">🐙 GitHub</button>
+        <p class="terms">By continuing you agree to DevPel's <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</p>
+      </div>
+
+      <!-- REGISTER -->
+      <div id="register" style="display:none;">
+        <h2>Join DevPel</h2>
+        <p class="sub">Build your profile in under a minute.</p>
+        <form action="/register" method="POST">
+          {% csrf_token %}
+          <label>Full name</label>
+          <input type="text" name="full_name" placeholder="Dalya Muhaisen">
+          {% if errors.full_name %}<div class="err">{{ errors.full_name }}</div>{% endif %}
+          <label>Email</label>
+          <input type="email" name="email" placeholder="you@example.com">
+          {% if errors.email %}<div class="err">{{ errors.email }}</div>{% endif %}
+          <label>Password</label>
+          <input type="password" name="password" placeholder="••••••••••">
+          {% if errors.password %}<div class="err">{{ errors.password }}</div>{% endif %}
+          <label>GitHub</label>
+          <input type="text" name="github_url" placeholder="github.com/you">
+          {% if errors.github_url %}<div class="err">{{ errors.github_url }}</div>{% endif %}
+          <button type="submit" class="btn btn-primary">Create account →</button>
+        </form>
+        <div class="or">or continue with</div>
+        <button class="btn btn-github" type="button" onclick="alert('GitHub OAuth not required for exam scope.')">🐙 GitHub</button>
+        <p class="terms">By continuing you agree to DevPel's <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(name, el) {
+  document.getElementById('signin').style.display = name === 'signin' ? 'block' : 'none';
+  document.getElementById('register').style.display = name === 'register' ? 'block' : 'none';
+
+  document.querySelectorAll('.tabs a').forEach(a => a.classList.remove('active'));
+
+  if (el) {
+    el.classList.add('active');
+  }
+}
+</script>
+</body>
+</html>
