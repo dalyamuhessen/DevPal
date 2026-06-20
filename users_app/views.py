@@ -9,6 +9,18 @@ AVATAR_COLORS = ['#1a3a6e', '#c2410c', '#1e3a8a', '#166534', '#7f1d1d', '#4338ca
 def avatar_color(user_id):
     return AVATAR_COLORS[user_id % len(AVATAR_COLORS)]
 
+def landing(request):
+    if request.session.get('user_id'):
+        return redirect('/dashboard')
+    stats = {
+        'developers': User.objects.count(),
+        'projects': Project.objects.count(),
+        'cities': User.objects.exclude(location='').values('location').distinct().count(),
+    }
+    return render(request, 'about.html', {'stats': stats})
+
+
+
 def index(request):
     if request.session.get('user_id'):
         return redirect('/dashboard')
@@ -50,12 +62,12 @@ def register(request):
 
 def login(request):
     if request.method != 'POST':
-        return redirect('/')
+        return redirect('/auth')
     errors = User.objects.login_validator(request.POST)
     if errors:
         for key, val in errors.items():
             request.session[f'login_err_{key}'] = val
-        return redirect('/')
+        return redirect('/auth')
     user = User.objects.get(email=request.POST['email'])
     request.session['user_id'] = user.id
     return redirect('/dashboard')

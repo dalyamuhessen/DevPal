@@ -4,13 +4,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="{% static 'css/about.css'%}">
+<link rel="stylesheet" href="{% static 'css/about.css' %}">
 <title>About — DevPel</title>
 </head>
 <body>
-<nav>
+
+<nav class="topnav">
   <a href="{% if logged_user %}/dashboard{% else %}/{% endif %}" class="logo"><span class="dev">▶ Dev</span><span class="pel">Pel</span></a>
-  <form class="search" action="/dashboard" method="GET"><input type="text" name="q" placeholder="Search projects, developers, skills…"></form>
+  <form class="search" action="/dashboard" method="GET">
+    <input type="text" name="q" placeholder="Search projects, developers, skills…">
+  </form>
   <div class="navlinks">
     {% if logged_user %}
     <a href="/dashboard">Home</a>
@@ -18,52 +21,123 @@
     <a href="/profile/{{ logged_user.id }}">Profile</a>
     <a href="/logout">Logout</a>
     {% else %}
-    <a href="/">Sign in</a>
+    <a href="/auth" class="signin">Sign in</a>
     {% endif %}
   </div>
 </nav>
 
-<div class="container">
-  <div class="hero">
-    <div class="logo2"><span class="dev">▶ Dev</span><span class="pel">Pel</span></div>
-    <h1>Bridging Palestinian developers with the global tech community — one project at a time.</h1>
-  </div>
+<main>
 
-  <div class="card">
-    <p class="intro">DevPel is a professional networking platform built specifically for developers in Gaza and Palestine. It brings together developer profiles, projects, skills, and collaborations in one place.</p>
-
-    <div class="pillars">
-      <div class="pillar">
-        <div class="icon">📁</div>
-        <b>Showcase work</b>
-        <p>Post solo or team projects with stack, GitHub links and contributors.</p>
-      </div>
-      <div class="pillar">
-        <div class="icon">👥</div>
-        <b>Find collaborators</b>
-        <p>Build teams, credit every contributor, grow together.</p>
-      </div>
-      <div class="pillar">
-        <div class="icon">🔍</div>
-        <b>Skill-based discovery</b>
-        <p>Filter developers and projects by technology and stack.</p>
+  <section class="hero">
+    <div class="hero-copy">
+      <span class="eyebrow">// about devpel</span>
+      <h1>Built by developers<br>who needed this<br>to exist.</h1>
+      <p class="lede">DevPel is the network we wished we had &mdash; a home base for Palestinian developers to ship work, find collaborators, and be seen by the people building the same thing.</p>
+      <div class="hero-stats">
+        <div><b>1,240+</b><span>developers</span></div>
+        <div><b>3,800+</b><span>projects shipped</span></div>
+        <div><b>96</b><span>cities</span></div>
       </div>
     </div>
 
-    <div class="teamlabel">THE TEAM</div>
-    <div class="teamrow">
-      <div class="av" style="background:#1d2c6b;">DM</div>
-      <div><b>Dalya Muhaisen</b><span>Founder & Lead Engineer</span></div>
+    <div class="terminal" aria-hidden="true">
+      <div class="terminal-bar">
+        <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+        <span class="terminal-title">mission.md</span>
+      </div>
+      <div class="terminal-body">
+<pre><span class="t-prompt">$</span> cat mission.md
+
+<span class="t-h">## Why DevPel</span>
+
+Gaza and the West Bank are full of
+engineers shipping real things &mdash;
+APIs, apps, tools for their own
+communities. Most of that work was
+scattered across private repos and
+group chats, invisible to anyone
+outside them.
+
+<span class="t-h">## What changed</span>
+
+We built one place to <span class="t-accent">post it</span>,
+<span class="t-accent">credit everyone</span> who built it, and
+<span class="t-accent">find the next person</span> to build with.
+
+<span class="t-prompt">$</span> <span class="t-cursor">▌</span></pre>
+      </div>
     </div>
-    <div class="teamrow">
-      <div class="av" style="background:#c2410c;">ON</div>
-      <div><b>Omar Nasser</b><span>Backend</span></div>
+  </section>
+
+  <!-- ============ DIFF : three pillars as a code diff ============ -->
+  <section class="diff-section">
+    <div class="diff-head">
+      <span class="eyebrow">// what it does</span>
+      <h2>Three things, done properly</h2>
     </div>
-    <div class="teamrow">
-      <div class="av" style="background:#1e3a8a;">LK</div>
-      <div><b>Layla Khalil</b><span>Frontend & Design</span></div>
+
+    <div class="diff-block">
+      <div class="diff-filebar">platform.diff</div>
+
+      <div class="diff-row">
+        <span class="diff-marker plus">+</span>
+        <div class="diff-content">
+          <b>showcase_work()</b>
+          <p>Post solo or team projects with a real tech stack, a GitHub link, and screenshots. No portfolio template required.</p>
+        </div>
+      </div>
+
+      <div class="diff-row">
+        <span class="diff-marker plus">+</span>
+        <div class="diff-content">
+          <b>find_collaborators()</b>
+          <p>Add every contributor by name. Teams get full credit &mdash; not just the person who happened to post it.</p>
+        </div>
+      </div>
+
+      <div class="diff-row">
+        <span class="diff-marker plus">+</span>
+        <div class="diff-content">
+          <b>discover_by_skill()</b>
+          <p>Filter developers and projects by stack &mdash; Django, Flutter, whatever you're hiring or matching for.</p>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
+  </section>
+
+  <!-- ============ TEAM : git log style ============ -->
+  <section class="team-section">
+    <div class="diff-head">
+      <span class="eyebrow">// the team</span>
+      <h2>git log --authors</h2>
+    </div>
+
+    <div class="commit-list">
+      <div class="commit">
+        <div class="commit-avatar" style="background:#1d2c6b;">DM</div>
+        <div class="commit-meta">
+          <div class="commit-top">
+            <b>Dalya Muhaisen</b>
+            <span class="commit-hash">founder</span>
+          </div>
+          <span class="commit-role">Lead Engineer &mdash; full-stack, shipped v1</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="cta-section">
+    <h2>Your work belongs here too.</h2>
+    <p>Join the developers already building in the open.</p>
+    {% if logged_user %}
+      <a href="/dashboard" class="cta-btn">Go to your feed →</a>
+    {% else %}
+      <a href="/" class="cta-btn">Create your account →</a>
+    {% endif %}
+  </section>
+
+</main>
+
 </body>
 </html>

@@ -1,0 +1,192 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<title>DevPel — Dashboard</title>
+</head>
+<body>
+<nav>
+  <a href="/dashboard" class="logo"><span class="dev"><img src="{% static 'img/devpel-logo.svg' %}" alt="DevPel" height="28">
+ Dev</span><span class="pel">Pel</span></a>
+  <form class="search" action="/dashboard" method="GET">
+    <span>🔍</span><input type="text" name="q" placeholder="Search projects, developers, skills…" value="{{ search }}">
+  </form>
+  <div class="navlinks">
+    <a href="/dashboard" class="active">Home</a>
+    <a href="/developers">Explore</a>
+    <a href="/about">About</a>
+    <a href="/profile/{{ logged_user.id }}" class="btn-post">+ Post</a>
+    <a href="/profile/{{ logged_user.id }}" class="avatar-nav">{{ logged_user.initials }}</a>
+    <a href="/logout" style="color:#9aa1b5;font-size:13px;">Logout</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- LEFT: profile mini card -->
+  <div>
+    <div class="profile-card">
+      <div class="profile-banner"></div>
+      <div class="profile-body">
+        <div class="avatar-big">{{ logged_user.initials }}</div>
+        <h3>{{ logged_user.full_name }}</h3>
+        <span class="handle">@{{ logged_user.handle }}</span>
+        <p class="bio">{{ logged_user.bio|default:"Add a bio to tell the community what you build." }}</p>
+        <div class="stat-row">
+          <div><b>{{ own_projects_count }}</b><span>PROJECTS</span></div>
+          <div><b>{{ own_likes_total }}</b><span>LIKES</span></div>
+          <div><b>{{ peers_count }}</b><span>PEERS</span></div>
+        </div>
+        <a href="/profile/{{ logged_user.id }}" class="btn-view">View profile</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- CENTER: feed -->
+  <div>
+    <div class="card">
+      <form class="composer compose-form" action="/project/create" method="POST" enctype="multipart/form-data" id="quickform">
+        {% csrf_token %}
+        <div class="av" style="background:#1d2c6b;">{{ logged_user.initials }}</div>
+        <input type="text" name="title" placeholder="Share a project you're building…" required>
+        <input type="hidden" name="description" id="quickdesc">
+        <input type="hidden" name="tech_stack" value="General">
+        <input type="hidden" name="project_type" value="solo">
+        <button type="button" onclick="document.getElementById('full-composer').style.display='block'; this.closest('form').style.display='none';">Post</button>
+      </form>
+
+      <form id="full-composer" style="display:none; margin-top:14px;" action="/project/create" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label style="font-size:12px;font-weight:700;color:#6b7280;">Title</label>
+        <input type="text" name="title" style="width:100%;padding:9px;margin:6px 0 10px;border:1px solid #e7eaf3;border-radius:8px;" placeholder="Project title">
+        {% if errors.title %}<div style="color:#dc2626;font-size:12px;margin-bottom:8px;">{{ errors.title }}</div>{% endif %}
+        <label style="font-size:12px;font-weight:700;color:#6b7280;">Description</label>
+        <textarea name="description" rows="3" style="width:100%;padding:9px;margin:6px 0 10px;border:1px solid #e7eaf3;border-radius:8px;" placeholder="What does it do?"></textarea>
+        {% if errors.description %}<div style="color:#dc2626;font-size:12px;margin-bottom:8px;">{{ errors.description }}</div>{% endif %}
+        <label style="font-size:12px;font-weight:700;color:#6b7280;">Tech stack (comma separated)</label>
+        <input type="text" name="tech_stack" style="width:100%;padding:9px;margin:6px 0 10px;border:1px solid #e7eaf3;border-radius:8px;" placeholder="Django, React, MySQL">
+        {% if errors.tech_stack %}<div style="color:#dc2626;font-size:12px;margin-bottom:8px;">{{ errors.tech_stack }}</div>{% endif %}
+        <label style="font-size:12px;font-weight:700;color:#6b7280;">GitHub URL</label>
+        <input type="text" name="github_url" style="width:100%;padding:9px;margin:6px 0 10px;border:1px solid #e7eaf3;border-radius:8px;" placeholder="github.com/you/project">
+        <label style="font-size:12px;font-weight:700;color:#6b7280;">Type</label>
+        <select name="project_type" style="width:100%;padding:9px;margin:6px 0 10px;border:1px solid #e7eaf3;border-radius:8px;">
+          <option value="solo">Solo</option>
+          <option value="team">Team</option>
+        </select>
+        <label style="font-size:12px;font-weight:700;color:#6b7280;">Image</label>
+        <input type="file" name="image" accept="image/*" style="width:100%;margin:6px 0 14px;">
+        <button type="submit" style="width:100%;background:#3b4ed6;color:#fff;border:none;padding:11px;border-radius:8px;font-weight:700;cursor:pointer;">Post Project</button>
+      </form>
+    </div>
+
+    <div class="filters">
+      <a href="?type=" class="{% if not ptype %}active{% endif %}">All</a>
+      <a href="?type=solo" class="{% if ptype == 'solo' %}active{% endif %}">Solo</a>
+      <a href="?type=team" class="{% if ptype == 'team' %}active{% endif %}">Team</a>
+      <span class="sort">Latest</span>
+    </div>
+
+    {% for project in projects %}
+    <div class="card pcard">
+      <div class="top">
+        <div class="av" style="background:{% cycle '#1d2c6b' '#c2410c' '#1e3a8a' '#166534' '#7f1d1d' %};">{{ project.owner.initials }}</div>
+        <div>
+          <div class="pname">
+            <a href="/profile/{{ project.owner.id }}" style="text-decoration:none;color:#11142b;">{{ project.owner.full_name }}</a>
+          </div>
+          <div class="pmeta">@{{ project.owner.handle }} · {{ project.created_at|timesince }} ago</div>
+        </div>
+        <span class="badge">
+          {% if project.project_type == 'team' %}Team · {{ project.contributors.count|add:1 }}{% else %}Solo{% endif %}
+        </span>
+      </div>
+
+      <a href="/project/{{ project.id }}" class="ptitle">{{ project.title }}</a>
+      <p class="pdesc">{{ project.description|truncatechars:160 }}</p>
+
+      <div class="tech">
+        {% for tech in project.tech_list %}<span>{{ tech }}</span>{% endfor %}
+      </div>
+
+      {% if project.contributors.count > 0 %}
+      <div class="contrib">{{ project.contributors.count }} contributor{{ project.contributors.count|pluralize }}</div>
+      {% endif %}
+
+      <div class="actions">
+        <button class="like-btn {% if project.id in liked_ids %}liked{% endif %}" data-id="{{ project.id }}">
+          {% if project.id in liked_ids %}❤️{% else %}🤍{% endif %} <span class="lc">{{ project.likes.count }}</span>
+        </button>
+        <a href="/project/{{ project.id }}">💬 {{ project.comments.count }}</a>
+        <button class="share-btn" data-id="{{ project.id }}">🔗 <span class="sc">{{ project.share_count }}</span></button>
+        {% if project.owner.id == logged_user.id %}
+        <a href="/project/edit/{{ project.id }}" class="editlink">Edit</a>
+        {% endif %}
+      </div>
+    </div>
+    {% empty %}
+    <div class="card" style="text-align:center; color:#9aa1b5; padding:40px;">
+      No projects yet — be the first to post one! 🚀
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- RIGHT: sidebar -->
+  <div>
+    <div class="card" style="margin-bottom:16px;">
+      <div class="sidebar-title">People to follow</div>
+      {% for person in people_to_follow %}
+      <div class="person">
+        <div class="av" style="background:{% cycle '#1d2c6b' '#c2410c' '#1e3a8a' %};">{{ person.initials }}</div>
+        <div>
+          <b>{{ person.full_name }}</b>
+          <span>{{ person.role_title|default:"Developer" }}</span>
+        </div>
+        <form action="/user/follow/{{ person.id }}" method="POST">
+          {% csrf_token %}
+          <button type="submit" class="follow-btn">Follow</button>
+        </form>
+      </div>
+      {% empty %}
+      <p style="font-size:12px;color:#9aa1b5;">No new people right now.</p>
+      {% endfor %}
+    </div>
+
+    <div class="card">
+      <div class="sidebar-title">Trending stacks</div>
+      {% for tech in trending %}<span class="stack-pill">{{ tech }}</span>{% endfor %}
+    </div>
+  </div>
+
+</div>
+
+<script>
+const CSRF = '{{ csrf_token }}';
+
+document.querySelectorAll('.like-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    fetch(`/api/projects/${this.dataset.id}/like/`, {
+      method:'POST', headers:{'X-CSRFToken':CSRF,'Content-Type':'application/json'}
+    }).then(r=>r.json()).then(data => {
+      this.querySelector('.lc').textContent = data.likes_count;
+      this.classList.toggle('liked', data.liked);
+      this.innerHTML = (data.liked ? '❤️' : '🤍') + ` <span class="lc">${data.likes_count}</span>`;
+    });
+  });
+});
+
+document.querySelectorAll('.share-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    fetch(`/api/projects/${this.dataset.id}/share/`, {
+      method:'POST', headers:{'X-CSRFToken':CSRF,'Content-Type':'application/json'}
+    }).then(r=>r.json()).then(data => {
+      this.querySelector('.sc').textContent = data.share_count;
+      navigator.clipboard.writeText(window.location.origin + '/project/' + this.dataset.id);
+    });
+  });
+});
+</script>
+</body>
+</html>

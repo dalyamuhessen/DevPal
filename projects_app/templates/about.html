@@ -1,0 +1,71 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{% static 'css/about.css'%}">
+<title>About — DevPel</title>
+ 
+</head>
+<body>
+<nav>
+  <a href="{% if logged_user %}/dashboard{% else %}/{% endif %}" class="logo"><span class="dev">▶ Dev</span><span class="pel">Pel</span></a>
+  <form class="search" action="/dashboard" method="GET"><input type="text" name="q" placeholder="Search projects, developers, skills…"></form>
+  <div class="navlinks">
+    {% if logged_user %}
+    <a href="/dashboard">Home</a>
+    <a href="/developers">Explore</a>
+    <a href="/profile/{{ logged_user.id }}">Profile</a>
+    <a href="/logout">Logout</a>
+    {% else %}
+    <a href="/">Sign in</a>
+    {% endif %}
+  </div>
+</nav>
+
+<div class="container">
+  <div class="hero">
+    <div class="logo2"><span class="dev">▶ Dev</span><span class="pel">Pel</span></div>
+    <h1>Bridging Palestinian developers with the global tech community — one project at a time.</h1>
+  </div>
+
+  <div class="card">
+    <p class="intro">DevPel is a professional networking platform built specifically for developers in Gaza and Palestine. It brings together developer profiles, projects, skills, and collaborations in one place.</p>
+
+    <div class="pillars">
+      <div class="pillar">
+        <div class="icon">📁</div>
+        <b>Showcase work</b>
+        <p>Post solo or team projects with stack, GitHub links and contributors.</p>
+      </div>
+      <div class="pillar">
+        <div class="icon">👥</div>
+        <b>Find collaborators</b>
+        <p>Build teams, credit every contributor, grow together.</p>
+      </div>
+      <div class="pillar">
+        <div class="icon">🔍</div>
+        <b>Skill-based discovery</b>
+        <p>Filter developers and projects by technology and stack.</p>
+      </div>
+    </div>
+
+    <div class="teamlabel">THE TEAM</div>
+    <div class="teamrow">
+      <div class="av" style="background:#1d2c6b;">DM</div>
+      <div><b>Dalya Muhaisen</b><span>Founder & Lead Engineer</span></div>
+    </div>
+    <div class="teamrow">
+      <div class="av" style="background:#c2410c;">ON</div>
+      <div><b>Omar Nasser</b><span>Backend</span></div>
+    </div>
+    <div class="teamrow">
+      <div class="av" style="background:#1e3a8a;">LK</div>
+      <div><b>Layla Khalil</b><span>Frontend & Design</span></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

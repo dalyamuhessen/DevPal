@@ -1,0 +1,373 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: -apple-system, "Segoe UI", Arial, sans-serif;
+  background: #f4f6fb;
+  color: #11142b;
+}
+nav {
+  background: #fff;
+  border-bottom: 1px solid #e7eaf3;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.logo {
+  font-weight: 800;
+  font-size: 18px;
+}
+.logo .dev {
+  color: #11142b;
+}
+.logo .pel {
+  color: #3b4ed6;
+}
+.search {
+  flex: 1;
+  max-width: 420px;
+  background: #f1f3f9;
+  border-radius: 10px;
+  padding: 9px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.search input {
+  border: none;
+  background: transparent;
+  outline: none;
+  width: 100%;
+  font-size: 14px;
+}
+.navlinks {
+  display: flex;
+  gap: 18px;
+  margin-left: auto;
+  align-items: center;
+}
+.navlinks a {
+  text-decoration: none;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 600;
+}
+.navlinks a.active {
+  color: #3b4ed6;
+}
+.btn-post {
+  background: #3b4ed6;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 16px;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+}
+.avatar-nav {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #1d2c6b;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 24px auto;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: 240px 1fr 260px;
+  gap: 20px;
+}
+@media (max-width: 1000px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.profile-card {
+  background: linear-gradient(160deg, #1d2c6b, #0b1330);
+  border-radius: 14px;
+  overflow: hidden;
+  color: #fff;
+}
+.profile-banner {
+  height: 50px;
+}
+.profile-body {
+  padding: 16px;
+  text-align: center;
+  background: #fff;
+  color: #11142b;
+}
+.avatar-big {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #1d2c6b;
+  color: #fff;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: -46px auto 10px;
+  border: 3px solid #fff;
+  font-size: 18px;
+}
+.profile-body h3 {
+  font-size: 15px;
+}
+.profile-body span.handle {
+  color: #9aa1b5;
+  font-size: 12px;
+}
+.profile-body p.bio {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 8px;
+  line-height: 1.5;
+}
+.stat-row {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 14px;
+  border-top: 1px solid #f1f3f9;
+  padding-top: 14px;
+}
+.stat-row div b {
+  display: block;
+  font-size: 15px;
+}
+.stat-row div span {
+  font-size: 10px;
+  color: #9aa1b5;
+  letter-spacing: 0.5px;
+}
+.btn-view {
+  display: block;
+  text-align: center;
+  margin-top: 14px;
+  background: #f1f3f9;
+  color: #11142b;
+  padding: 8px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.composer {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.composer input {
+  flex: 1;
+  border: 1px solid #e7eaf3;
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 14px;
+}
+.composer button {
+  background: #3b4ed6;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 11px 18px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.filters {
+  display: flex;
+  gap: 8px;
+  margin: 16px 0;
+  align-items: center;
+}
+.filters a {
+  padding: 6px 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 600;
+}
+.filters a.active {
+  background: #eef0fc;
+  color: #3b4ed6;
+}
+.filters .sort {
+  margin-left: auto;
+  color: #9aa1b5;
+  font-size: 13px;
+}
+
+.pcard {
+  margin-bottom: 14px;
+}
+.pcard .top {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.av {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+.pname {
+  font-weight: 700;
+  font-size: 14px;
+}
+.pmeta {
+  font-size: 12px;
+  color: #9aa1b5;
+}
+.badge {
+  margin-left: auto;
+  background: #eef0fc;
+  color: #3b4ed6;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 6px;
+}
+.ptitle {
+  font-size: 17px;
+  font-weight: 800;
+  margin: 10px 0 6px;
+  text-decoration: none;
+  color: #11142b;
+  display: block;
+}
+.pdesc {
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+.tech {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.tech span {
+  background: #eef0fc;
+  color: #3b4ed6;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+.contrib {
+  font-size: 12px;
+  color: #9aa1b5;
+  margin-bottom: 10px;
+}
+.actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  border-top: 1px solid #f1f3f9;
+  padding-top: 10px;
+}
+.actions button,
+.actions a {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  text-decoration: none;
+}
+.actions button.liked {
+  color: #e0245e;
+}
+.actions .editlink {
+  margin-left: auto;
+  color: #3b4ed6;
+}
+
+.sidebar-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #11142b;
+  margin-bottom: 12px;
+}
+.person {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.person .av {
+  width: 34px;
+  height: 34px;
+  font-size: 12px;
+}
+.person div b {
+  display: block;
+  font-size: 13px;
+}
+.person div span {
+  font-size: 11px;
+  color: #9aa1b5;
+}
+.follow-btn {
+  margin-left: auto;
+  background: #f1f3f9;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  color: #11142b;
+}
+.stack-pill {
+  display: inline-block;
+  background: #eef0fc;
+  color: #3b4ed6;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin: 3px;
+  font-weight: 600;
+}
+
+.compose-form {
+  margin-bottom: 0;
+}
