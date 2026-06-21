@@ -5,19 +5,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Developers — DevPel</title>
-    <link rel="stylesheet" href="{% static 'css/developers.css' %}">
+        <link rel="stylesheet" href="{% static 'css/developers.css' %}">
+
+    <title>DPal</title>
 </head>
 
 <body>
     <nav>
-        <a href="/dashboard" class="logo"><span class="dev">▶ Dev</span><span class="pel">Pel</span></a>
+        <a href="/dashboard" class="logo"><span class="dev">D</span><span class="pel">Pal</span></a>
         <form class="search" action="/dashboard" method="GET"><input type="text" name="q"
                 placeholder="Search projects, developers, skills…"></form>
         <div class="navlinks">
             <a href="/dashboard">Home</a>
             <a href="/developers" style="color:#3b4ed6;">Explore</a>
-            <a href="/profile/{{ logged_user.id }}" class="btn-post">+ Post</a>
+            <!-- <a href="/profile/{{ logged_user.id }}" class="btn-post">+ Post</a> -->
             <a href="/profile/{{ logged_user.id }}" class="avatar-nav">{{ logged_user.initials }}</a>
         </div>
     </nav>
@@ -53,8 +54,7 @@
                         <span>@{{ dev.handle }}</span>
                     </div>
                 </div>
-                <div class="devmeta">📍 {{ dev.location|default:"Palestine" }} · {{ dev.role_title|default:"Developer"
-                    }}</div>
+                <div class="devmeta">📍 {{ dev.location|default:"Palestine" }} · {{ dev.role_title|default:"Developer"}}</div>
                 <div class="devskills">
                     {% for us in dev.skills.all %}<span>{{ us.skill.name }}</span>{% endfor %}
                 </div>

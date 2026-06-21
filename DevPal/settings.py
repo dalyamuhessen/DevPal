@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'DevPal.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': str(BASE_DIR / 'db.sqlite3'),
      
     }
 }
@@ -129,3 +129,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# ── GitHub OAuth ──────────────────────────────────────
+GITHUB_CLIENT_ID = 'Ov23liXIK6iiWs3o4fWL'
+GITHUB_CLIENT_SECRET = 'be24bc66c17b3f9ba29de92ee3cc707498c793e7'
+GITHUB_CALLBACK_URL = 'http://127.0.0.1:8000/auth/github/callback/'

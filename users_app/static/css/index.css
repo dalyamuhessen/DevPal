@@ -12,7 +12,7 @@ body {
 }
 .left {
   flex: 1;
-  background: linear-gradient(160deg, #1d2c6b 0%, #0b1330 100%);
+  background:#0B0F1A;
   color: #fff;
   padding: 60px;
   display: flex;
@@ -31,7 +31,7 @@ body {
   color: #fff;
 }
 .logo .pel {
-  color: #6d8bff;
+  color: #fff;
 }
 .left h1 {
   font-size: 42px;
@@ -142,7 +142,7 @@ input {
 }
 input:focus {
   outline: none;
-  border-color: #3b4ed6;
+  border-color: #11162a;
 }
 .err {
   color: #dc2626;
@@ -160,11 +160,11 @@ input:focus {
   cursor: pointer;
 }
 .btn-primary {
-  background: #3b4ed6;
+  background: #11162a;
   color: #fff;
 }
 .btn-primary:hover {
-  background: #2f3fc0;
+  background: #21294a;
 }
 .or {
   text-align: center;
@@ -189,7 +189,7 @@ input:focus {
   line-height: 1.5;
 }
 .terms a {
-  color: #3b4ed6;
+  color: #11162a;
   text-decoration: none;
 }
 @media (max-width: 900px) {

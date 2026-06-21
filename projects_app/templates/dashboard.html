@@ -5,12 +5,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
-<title>DevPel — Dashboard</title>
+<title>DPal — Dashboard</title>
 </head>
 <body>
 <nav>
-  <a href="/dashboard" class="logo"><span class="dev"><img src="{% static 'img/devpel-logo.svg' %}" alt="DevPel" height="28">
- Dev</span><span class="pel">Pel</span></a>
+  <a href="/dashboard" class="logo"><span class="dev">D</span><span class="pel">Pal</span></a>
   <form class="search" action="/dashboard" method="GET">
     <span>🔍</span><input type="text" name="q" placeholder="Search projects, developers, skills…" value="{{ search }}">
   </form>
@@ -18,7 +17,7 @@
     <a href="/dashboard" class="active">Home</a>
     <a href="/developers">Explore</a>
     <a href="/about">About</a>
-    <a href="/profile/{{ logged_user.id }}" class="btn-post">+ Post</a>
+    <!-- <a href="/profile/{{ logged_user.id }}" class="btn-post">+ Post</a> -->
     <a href="/profile/{{ logged_user.id }}" class="avatar-nav">{{ logged_user.initials }}</a>
     <a href="/logout" style="color:#9aa1b5;font-size:13px;">Logout</a>
   </div>
@@ -50,12 +49,12 @@
     <div class="card">
       <form class="composer compose-form" action="/project/create" method="POST" enctype="multipart/form-data" id="quickform">
         {% csrf_token %}
-        <div class="av" style="background:#1d2c6b;">{{ logged_user.initials }}</div>
+        <div class="av" style="background:#11142b;">{{ logged_user.initials }}</div>
         <input type="text" name="title" placeholder="Share a project you're building…" required>
         <input type="hidden" name="description" id="quickdesc">
         <input type="hidden" name="tech_stack" value="General">
         <input type="hidden" name="project_type" value="solo">
-        <button type="button" onclick="document.getElementById('full-composer').style.display='block'; this.closest('form').style.display='none';">Post</button>
+        <button type="button" class="btn-post" onclick="document.getElementById('full-composer').style.display='block'; this.closest('form').style.display='none';">Post</button>
       </form>
 
       <form id="full-composer" style="display:none; margin-top:14px;" action="/project/create" method="POST" enctype="multipart/form-data">
@@ -78,7 +77,7 @@
         </select>
         <label style="font-size:12px;font-weight:700;color:#6b7280;">Image</label>
         <input type="file" name="image" accept="image/*" style="width:100%;margin:6px 0 14px;">
-        <button type="submit" style="width:100%;background:#3b4ed6;color:#fff;border:none;padding:11px;border-radius:8px;font-weight:700;cursor:pointer;">Post Project</button>
+        <button type="submit" style="width:100%;background:#11142b;color:#fff;border:none;padding:11px;border-radius:8px;font-weight:700;cursor:pointer;">Post Project</button>
       </form>
     </div>
 

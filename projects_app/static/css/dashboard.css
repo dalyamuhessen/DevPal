@@ -25,7 +25,7 @@ nav {
   color: #11142b;
 }
 .logo .pel {
-  color: #3b4ed6;
+  color: #11142b;
 }
 .search {
   flex: 1;
@@ -57,10 +57,10 @@ nav {
   font-weight: 600;
 }
 .navlinks a.active {
-  color: #3b4ed6;
+  color: #11142b;
 }
 .btn-post {
-  background: #3b4ed6;
+  background: #11142b;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -73,8 +73,8 @@ nav {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #1d2c6b;
-  color: #fff;
+  background: #11142b;
+  color: #e60000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -105,13 +105,15 @@ nav {
 }
 
 .profile-card {
-  background: linear-gradient(160deg, #1d2c6b, #0b1330);
+  /* background: linear-gradient(160deg, #1d2c6b, #0b1330); */
+  background: #11142b;
   border-radius: 14px;
   overflow: hidden;
   color: #fff;
 }
 .profile-banner {
   height: 50px;
+  background:  #11142b;;
 }
 .profile-body {
   padding: 16px;
@@ -123,7 +125,7 @@ nav {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: #1d2c6b;
+  background: #11142b;
   color: #fff;
   font-weight: 700;
   display: flex;
@@ -188,7 +190,7 @@ nav {
   font-size: 14px;
 }
 .composer button {
-  background: #3b4ed6;
+  background: #11142b;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -214,7 +216,7 @@ nav {
 }
 .filters a.active {
   background: #eef0fc;
-  color: #3b4ed6;
+  color: #11142b;
 }
 .filters .sort {
   margin-left: auto;
@@ -253,7 +255,7 @@ nav {
 .badge {
   margin-left: auto;
   background: #eef0fc;
-  color: #3b4ed6;
+  color: #11142b;
   font-size: 11px;
   font-weight: 700;
   padding: 3px 10px;
@@ -281,7 +283,7 @@ nav {
 }
 .tech span {
   background: #eef0fc;
-  color: #3b4ed6;
+  color: #11142b;
   font-size: 11px;
   padding: 3px 10px;
   border-radius: 6px;
@@ -317,7 +319,7 @@ nav {
 }
 .actions .editlink {
   margin-left: auto;
-  color: #3b4ed6;
+  color: #11142b;
 }
 
 .sidebar-title {
@@ -360,7 +362,7 @@ nav {
 .stack-pill {
   display: inline-block;
   background: #eef0fc;
-  color: #3b4ed6;
+  color: #11142b;
   font-size: 11px;
   padding: 4px 10px;
   border-radius: 6px;

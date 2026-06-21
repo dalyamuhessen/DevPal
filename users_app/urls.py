@@ -4,6 +4,8 @@ from . import views
 urlpatterns = [
     path('', views.landing, name='landing'),       
     path('auth', views.index, name='index'),
+    path('auth/github/', views.github_login, name='github_login'),
+    path('auth/github/callback/', views.github_callback, name='github_callback'),
     path('register', views.register, name='register'),
     path('login', views.login, name='login'),
     path('logout', views.logout, name='logout'),

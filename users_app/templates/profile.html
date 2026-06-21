@@ -1,135 +1,146 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
-    <title>{{ profile_user.full_name }} — DevPel</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+  <title>{{ profile_user.full_name }} — DPal</title>
 </head>
+
 <body>
-<nav>
-  <a href="/dashboard" class="logo"><span class="dev">▶ Dev</span><span class="pel">Pel</span></a>
-  <form class="search" action="/dashboard" method="GET"><input type="text" name="q" placeholder="Search projects, developers, skills…"></form>
-  <div class="navlinks">
-    <a href="/dashboard">Home</a>
-    <a href="/developers">Explore</a>
-    <a href="/profile/{{ logged_user.id }}" class="btn-post">+ Post</a>
-    <a href="/profile/{{ logged_user.id }}" class="avatar-nav">{{ logged_user.initials }}</a>
-  </div>
-</nav>
+  <nav>
+    <a href="/dashboard" class="logo"><span class="dev">D</span><span class="pel">Pal</span></a>
+    <form class="search" action="/dashboard" method="GET"><input type="text" name="q"
+        placeholder="Search projects, developers, skills…"></form>
+    <div class="navlinks">
+      <a href="/dashboard">Home</a>
+      <a href="/developers">Explore</a>
+      <!-- <a href="/profile/{{ logged_user.id }}" class="btn-post">+ Post</a> -->
+      <a href="/profile/{{ logged_user.id }}" class="avatar-nav">{{ logged_user.initials }}</a>
+    </div>
+  </nav>
 
-<div class="container">
-  <a href="/dashboard" class="back">← Back</a>
+  <div class="container">
+    <a href="/dashboard" class="back">← Back</a>
 
-  <div class="hero"></div>
-  <div class="profilecard">
-    <div class="profiletop">
-      <div class="avatar-big" style="--avatar-color: {{ avatar_color }};">{{ profile_user.initials }}</div>
-      <div class="nameblock">
-        <h2>{{ profile_user.full_name }}</h2>
-        <span>@{{ profile_user.handle }}</span>
-      </div>
-      <div class="topbtns">
-        {% if profile_user.github_url %}<a href="{{ profile_user.github_url }}" target="_blank" class="btn-sm">🐙 GitHub</a>{% endif %}
-        {% if profile_user.id == logged_user.id %}
-        <button class="btn-sm primary" onclick="document.getElementById('editform').classList.toggle('show')">⚙ Edit profile</button>
+    <div class="hero"></div>
+    <div class="profilecard">
+      <div class="profiletop">
+        {% if profile_user.avatar %}
+        <img src="{{ profile_user.avatar.url }}" class="avatar-big" style="object-fit:cover;">
         {% else %}
-        <form action="/user/follow/{{ profile_user.id }}" method="POST">
-          {% csrf_token %}
-          <button type="submit" class="btn-sm {% if is_following %}primary{% endif %}">{% if is_following %}Following{% else %}Follow{% endif %}</button>
-        </form>
-        {% endif %}
+        <div class="avatar-big" style="--avatar-color: {{ avatar_color }};">{{ profile_user.initials }}</div>
+        {% endif %} <div class="nameblock">
+          <h2>{{ profile_user.full_name }}</h2>
+          <span>@{{ profile_user.handle }}</span>
+        </div>
+        <div class="topbtns">
+          {% if profile_user.github_url %}<a href="{{ profile_user.github_url }}" target="_blank" class="btn-sm"> GitHub</a>{% endif %}
+          {% if profile_user.id == logged_user.id %}
+          <button class="btn-sm primary" onclick="document.getElementById('editform').classList.toggle('show')">⚙ Edit
+            profile</button>
+          {% else %}
+          <form action="/user/follow/{{ profile_user.id }}" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn-sm {% if is_following %}primary{% endif %}">{% if is_following %} Following {% else %} Follow {% endif %}</button>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+
+      <p class="bio">{{ profile_user.bio|default:"This developer hasn't added a bio yet." }}</p>
+      <div class="meta-row">
+        {% if profile_user.location %}<span>📍 {{ profile_user.location }}</span>{% endif %}
+        {% if profile_user.role_title %}<span>👤 {{ profile_user.role_title }}</span>{% endif %}
+        {% if profile_user.github_url %}<span>🔗 {{ profile_user.github_url }}</span>{% endif %}
+      </div>
+
+      <div class="label">SKILLS</div>
+      <div class="skills">
+        {% for us in user_skills %}<span>{{ us.skill.name }}</span>{% empty %}<span
+          style="background:none;color:#9aa1b5;">No skills added yet.</span>{% endfor %}
+      </div>
+
+      <div class="stat-grid">
+        <div><b>{{ own_projects.count }}</b><span>PROJECTS</span></div>
+        <div><b>{{ user_skills.count }}</b><span>SKILLS</span></div>
+        <div><b>{{ total_likes }}</b><span>LIKES</span></div>
+        <div><b>{{ peers_count }}</b><span>PEERS</span></div>
       </div>
     </div>
 
-    <p class="bio">{{ profile_user.bio|default:"This developer hasn't added a bio yet." }}</p>
-    <div class="meta-row">
-      {% if profile_user.location %}<span>📍 {{ profile_user.location }}</span>{% endif %}
-      {% if profile_user.role_title %}<span>👤 {{ profile_user.role_title }}</span>{% endif %}
-      {% if profile_user.github_url %}<span>🔗 {{ profile_user.github_url }}</span>{% endif %}
+    {% if profile_user.id == logged_user.id %}
+    <div class="edit-form" id="editform">
+      <h3 style="font-size:15px; margin-bottom:6px;">Edit your profile</h3>
+      <form action="/profile/edit" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Bio</label>
+        <textarea name="bio" rows="2">{{ profile_user.bio }}</textarea>
+        <label>Role / Title</label>
+        <input type="text" name="role_title" value="{{ profile_user.role_title }}" placeholder="Full-stack developer">
+        <label>Location</label>
+        <input type="text" name="location" value="{{ profile_user.location }}" placeholder="Gaza">
+        <label>GitHub URL</label>
+        <input type="text" name="github_url" value="{{ profile_user.github_url }}">
+        <label>Skills (comma separated)</label>
+        <input type="text" name="skills" placeholder="Django, React, PostgreSQL"
+          value="{% for us in user_skills %}{{ us.skill.name }}{% if not forloop.last %}, {% endif %}{% endfor %}">
+        <label>Avatar</label>
+        <input type="file" name="avatar" accept="image/*">
+        <button type="submit">Save changes</button>
+      </form>
+    </div>
+    {% endif %}
+
+    <div class="tabs">
+      <a href="#" class="active" onclick="showTab(event,'projects')">Projects {{ own_projects.count }}</a>
+      <a href="#" onclick="showTab(event,'contrib')">Contributions {{ contributions.count }}</a>
+      <a href="#" onclick="showTab(event,'liked')">Liked {{ liked_projects.count }}</a>
     </div>
 
-    <div class="label">SKILLS</div>
-    <div class="skills">
-      {% for us in user_skills %}<span>{{ us.skill.name }}</span>{% empty %}<span style="background:none;color:#9aa1b5;">No skills added yet.</span>{% endfor %}
+    <div id="tab-projects">
+      {% for p in own_projects %}
+      <div class="card">
+        <a href="/project/{{ p.id }}" class="ptitle">{{ p.title }}</a>
+        <div class="pmeta">{{ p.created_at|timesince }} ago · {% if p.project_type == 'team' %}Team{% else %} Solo {% endif %}</div>
+        <p class="pdesc">{{ p.description|truncatechars:120 }}</p>
+        <span class="pstats">❤️ {{ p.likes.count }} · 💬 {{ p.comments.count }} · 🔗 {{ p.share_count }}</span>
+      </div>
+      {% empty %}
+      <div class="card" style="text-align:center;color:#9aa1b5;">No projects posted yet.</div>{% endfor %}
     </div>
 
-    <div class="stat-grid">
-      <div><b>{{ own_projects.count }}</b><span>PROJECTS</span></div>
-      <div><b>{{ user_skills.count }}</b><span>SKILLS</span></div>
-      <div><b>{{ total_likes }}</b><span>LIKES</span></div>
-      <div><b>{{ peers_count }}</b><span>PEERS</span></div>
+    <div id="tab-contrib" style="display:none;">
+      {% for c in contributions %}
+      <div class="card">
+        <a href="/project/{{ c.project.id }}" class="ptitle">{{ c.project.title }}</a>
+        <div class="pmeta">by {{ c.project.owner.full_name }}</div>
+      </div>
+      {% empty %}<div class="card" style="text-align:center;color:#9aa1b5;">No contributions yet.</div>{% endfor %}
+    </div>
+
+    <div id="tab-liked" style="display:none;">
+      {% for l in liked_projects %}
+      <div class="card">
+        <a href="/project/{{ l.project.id }}" class="ptitle">{{ l.project.title }}</a>
+        <div class="pmeta">by {{ l.project.owner.full_name }}</div>
+      </div>
+      {% empty %}<div class="card" style="text-align:center;color:#9aa1b5;">No liked projects yet.</div>{% endfor %}
     </div>
   </div>
 
-  {% if profile_user.id == logged_user.id %}
-  <div class="edit-form" id="editform">
-    <h3 style="font-size:15px; margin-bottom:6px;">Edit your profile</h3>
-    <form action="/profile/edit" method="POST" enctype="multipart/form-data">
-      {% csrf_token %}
-      <label>Bio</label>
-      <textarea name="bio" rows="2">{{ profile_user.bio }}</textarea>
-      <label>Role / Title</label>
-      <input type="text" name="role_title" value="{{ profile_user.role_title }}" placeholder="Full-stack developer">
-      <label>Location</label>
-      <input type="text" name="location" value="{{ profile_user.location }}" placeholder="Gaza">
-      <label>GitHub URL</label>
-      <input type="text" name="github_url" value="{{ profile_user.github_url }}">
-      <label>Skills (comma separated)</label>
-      <input type="text" name="skills" placeholder="Django, React, PostgreSQL" value="{% for us in user_skills %}{{ us.skill.name }}{% if not forloop.last %}, {% endif %}{% endfor %}">
-      <label>Avatar</label>
-      <input type="file" name="avatar" accept="image/*">
-      <button type="submit">Save changes</button>
-    </form>
-  </div>
-  {% endif %}
-
-  <div class="tabs">
-    <a href="#" class="active" onclick="showTab(event,'projects')">Projects {{ own_projects.count }}</a>
-    <a href="#" onclick="showTab(event,'contrib')">Contributions {{ contributions.count }}</a>
-    <a href="#" onclick="showTab(event,'liked')">Liked {{ liked_projects.count }}</a>
-  </div>
-
-  <div id="tab-projects">
-    {% for p in own_projects %}
-    <div class="card">
-      <a href="/project/{{ p.id }}" class="ptitle">{{ p.title }}</a>
-      <div class="pmeta">{{ p.created_at|timesince }} ago · {% if p.project_type == 'team' %}Team{% else %}Solo{% endif %}</div>
-      <p class="pdesc">{{ p.description|truncatechars:120 }}</p>
-      <span class="pstats">❤️ {{ p.likes.count }} · 💬 {{ p.comments.count }} · 🔗 {{ p.share_count }}</span>
-    </div>
-    {% empty %}<div class="card" style="text-align:center;color:#9aa1b5;">No projects posted yet.</div>{% endfor %}
-  </div>
-
-  <div id="tab-contrib" style="display:none;">
-    {% for c in contributions %}
-    <div class="card">
-      <a href="/project/{{ c.project.id }}" class="ptitle">{{ c.project.title }}</a>
-      <div class="pmeta">by {{ c.project.owner.full_name }}</div>
-    </div>
-    {% empty %}<div class="card" style="text-align:center;color:#9aa1b5;">No contributions yet.</div>{% endfor %}
-  </div>
-
-  <div id="tab-liked" style="display:none;">
-    {% for l in liked_projects %}
-    <div class="card">
-      <a href="/project/{{ l.project.id }}" class="ptitle">{{ l.project.title }}</a>
-      <div class="pmeta">by {{ l.project.owner.full_name }}</div>
-    </div>
-    {% empty %}<div class="card" style="text-align:center;color:#9aa1b5;">No liked projects yet.</div>{% endfor %}
-  </div>
-</div>
-
-<script>
-function showTab(e, name) {
-  e.preventDefault();
-  ['projects','contrib','liked'].forEach(t => {
-    document.getElementById('tab-'+t).style.display = (t===name) ? 'block':'none';
-  });
-  document.querySelectorAll('.tabs a').forEach(a=>a.classList.remove('active'));
-  e.target.classList.add('active');
-}
-</script>
+  <script>
+    function showTab(e, name) {
+      e.preventDefault();
+      ['projects', 'contrib', 'liked'].forEach(t => {
+        document.getElementById('tab-' + t).style.display = (t === name) ? 'block' : 'none';
+      });
+      document.querySelectorAll('.tabs a').forEach(a => a.classList.remove('active'));
+      e.target.classList.add('active');
+    }
+  </script>
 </body>
+
 </html>

@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{% static 'css/edit_project.css'%}">
+<title>Edit Project — DevPel</title>
+</head>
+<body>
+<nav><a href="/dashboard" class="logo"><span class="dev">▶ Dev</span><span class="pel">Pel</span></a></nav>
+
+<div class="container">
+  <div class="card">
+    <h2>✏️ Edit Project</h2>
+    <form action="/project/edit/{{ project.id }}" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <label>Title</label>
+      <input type="text" name="title" value="{{ project.title }}">
+      {% if errors.title %}<div class="err">{{ errors.title }}</div>{% endif %}
+
+      <label>Description</label>
+      <textarea name="description" rows="4">{{ project.description }}</textarea>
+      {% if errors.description %}<div class="err">{{ errors.description }}</div>{% endif %}
+
+      <label>Tech Stack (comma separated)</label>
+      <input type="text" name="tech_stack" value="{{ project.tech_stack }}">
+      {% if errors.tech_stack %}<div class="err">{{ errors.tech_stack }}</div>{% endif %}
+
+      <label>GitHub URL</label>
+      <input type="text" name="github_url" value="{{ project.github_url }}">
+
+      <label>Project Type</label>
+      <select name="project_type">
+        <option value="solo" {% if project.project_type == 'solo' %}selected{% endif %}>Solo</option>
+        <option value="team" {% if project.project_type == 'team' %}selected{% endif %}>Team</option>
+      </select>
+
+      <label>Contributors</label>
+      <select name="contributors" multiple style="height:110px;">
+        {% for user in all_users %}
+        <option value="{{ user.id }}" {% if user.id in contributor_ids %}selected{% endif %}>{{ user.full_name }}</option>
+        {% endfor %}
+      </select>
+
+      <label>Update Image</label>
+      <input type="file" name="image" accept="image/*">
+
+      <div class="btnrow">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a href="/project/{{ project.id }}" class="btn btn-outline">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+</body>
+</html>

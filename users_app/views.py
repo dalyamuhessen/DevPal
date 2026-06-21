@@ -1,7 +1,10 @@
 import bcrypt
+import requests
+from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
 from .models import User, Skill, UserSkill, Follow
+import re
 from projects_app.models import Project, Like, Comment, Share, Contributor
 
 AVATAR_COLORS = ['#1a3a6e', '#c2410c', '#1e3a8a', '#166534', '#7f1d1d', '#4338ca']
@@ -176,3 +179,92 @@ def about(request):
     if request.session.get('user_id'):
         logged_user = User.objects.get(id=request.session['user_id'])
     return render(request, 'about.html', {'logged_user': logged_user})
+def github_login(request):
+    github_auth_url = (
+        f"https://github.com/login/oauth/authorize"
+        f"?client_id={settings.GITHUB_CLIENT_ID}"
+        f"&redirect_uri={settings.GITHUB_CALLBACK_URL}"
+        f"&scope=read:user user:email"
+    )
+    return redirect(github_auth_url)
+
+
+def github_callback(request):
+    code = request.GET.get('code')
+    if not code:
+        return redirect('/auth')
+
+    # Step 1: exchange the code for an access token
+    token_response = requests.post(
+        'https://github.com/login/oauth/access_token',
+        data={
+            'client_id': settings.GITHUB_CLIENT_ID,
+            'client_secret': settings.GITHUB_CLIENT_SECRET,
+            'code': code,
+            'redirect_uri': settings.GITHUB_CALLBACK_URL,
+        },
+        headers={'Accept': 'application/json'}
+    )
+    token_data = token_response.json()
+    access_token = token_data.get('access_token')
+
+    if not access_token:
+        return redirect('/auth')
+
+    # Step 2: fetch the GitHub profile
+    profile_response = requests.get(
+        'https://api.github.com/user',
+        headers={'Authorization': f'Bearer {access_token}'}
+    )
+    profile = profile_response.json()
+
+    github_id = str(profile.get('id'))
+    github_username = profile.get('login', '')
+    full_name = profile.get('name') or github_username
+    github_profile_url = profile.get('html_url', '')
+
+    # GitHub may not return a public email — fetch separately if missing
+    email = profile.get('email')
+    if not email:
+        emails_response = requests.get(
+            'https://api.github.com/user/emails',
+            headers={'Authorization': f'Bearer {access_token}'}
+        )
+        emails_data = emails_response.json()
+        primary = next((e for e in emails_data if e.get('primary')), None)
+        email = primary['email'] if primary else f"{github_username}@users.noreply.github.com"
+
+    # Step 3: find existing user, else create one automatically
+    user = User.objects.filter(github_id=github_id).first()
+
+    if not user:
+        user = User.objects.filter(email=email).first()
+
+    if not user:
+        handle = generate_unique_handle(github_username)
+        user = User.objects.create(
+            full_name=full_name,
+            email=email,
+            password='',
+            handle=handle,
+            github_id=github_id,
+            github_url=github_profile_url,
+            bio=f"Joined via GitHub ({github_username})",
+        )
+    else:
+        if not user.github_id:
+            user.github_id = github_id
+            user.save()
+
+    request.session['user_id'] = user.id
+    return redirect('/dashboard')
+
+
+def generate_unique_handle(github_username):
+    base = re.sub(r'[^a-zA-Z0-9]', '', github_username).lower() or 'dev'
+    candidate = base
+    i = 1
+    while User.objects.filter(handle=candidate).exists():
+        candidate = f"{base}{i}"
+        i += 1
+    return candidate

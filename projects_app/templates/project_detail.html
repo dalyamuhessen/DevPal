@@ -1,0 +1,175 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{% static 'css/project_detail.css' %}">
+<title>{{ project.title }} — DPal</title>
+
+</head>
+<body>
+<nav>
+  <a href="/dashboard" class="logo"><span class="dev">D</span><span class="pel">Pal</span></a>
+  <form class="search" action="/dashboard" method="GET"><input type="text" name="q" placeholder="Search projects, developers, skills…"></form>
+  <div class="navlinks">
+    <a href="/dashboard">Home</a>
+    <a href="/developers">Explore</a>
+    <!-- <a href="/profile/{{ logged_user.id }}" class="btn-post">+ Post</a> -->
+    <a href="/profile/{{ logged_user.id }}" class="avatar-nav">{{ logged_user.initials }}</a>
+  </div>
+</nav>
+
+<div class="container">
+  <a href="/dashboard" class="back">← Back to feed</a>
+
+<div class="hero" {% if project.image %}style="background-image:url('{{ project.image.url }}'); background-size:cover; background-position:center;"{% endif %}>
+    <span class="typebadge">{% if project.project_type == 'team' %}Team · {{ project.contributors.count|add:1 }}{% else %}Solo{% endif %}</span>
+    {% if not project.image %}
+    <div class="codeicon">{ }</div>
+    {% endif %}
+</div>
+
+  <div class="card">
+    <div class="ownerrow">
+      <div class="av">{{ project.owner.initials }}</div>
+      <div>
+        <b><a href="/profile/{{ project.owner.id }}" style="color:#11142b;text-decoration:none;">{{ project.owner.full_name }}</a></b>
+        <span>@{{ project.owner.handle }} · {{ project.created_at|timesince }} ago</span>
+      </div>
+      {% if project.owner.id != logged_user.id %}
+      <form action="/user/follow/{{ project.owner.id }}" method="POST">
+        {% csrf_token %}
+        <button type="submit" class="follow-btn {% if is_following_owner %}following{% endif %}">
+          {% if is_following_owner %}Following{% else %}Follow{% endif %}
+        </button>
+      </form>
+      {% endif %}
+    </div>
+
+    <h1 class="ptitle">{{ project.title }}</h1>
+    <p class="pdesc">{{ project.description }}</p>
+
+    <div class="label">TECH STACK</div>
+    <div class="tech">{% for tech in project.tech_list %}<span>{{ tech }}</span>{% endfor %}</div>
+
+    {% if project.github_url %}
+    <a href="{{ project.github_url }}" target="_blank" class="ghlink">🐙 {{ project.github_url }} ↗</a>
+    {% endif %}
+
+    <div class="label">CONTRIBUTORS · {{ project.contributors.count|add:1 }}</div>
+    <div class="contributors">
+      <div class="crow">
+        <div class="av">{{ project.owner.initials }}</div>
+        <b>{{ project.owner.full_name }}</b>
+        <span class="role">{{ project.owner.role_title|default:"Full-stack developer" }}</span>
+        <span class="owner-tag">Owner</span>
+      </div>
+      {% for c in contributors %}
+      <div class="crow">
+        <div class="av" style="background:{% cycle '#c2410c' '#1e3a8a' '#166534' '#7f1d1d' %};">{{ c.user.initials }}</div>
+        <b>{{ c.user.full_name }}</b>
+        <span class="role">{{ c.user.role_title|default:"Developer" }}</span>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="actions-bar">
+      <button id="like-btn" class="{% if is_liked %}liked{% endif %}" data-id="{{ project.id }}">
+        {% if is_liked %}❤️{% else %}🤍{% endif %} <span id="like-count">{{ likes_count }}</span>
+      </button>
+      <span>💬 {{ comments.count }}</span>
+      <button id="share-btn" data-id="{{ project.id }}">🔗 <span id="share-count">{{ project.share_count }}</span></button>
+      <div class="right-actions">
+        {% if project.owner.id == logged_user.id %}
+        <a href="/project/edit/{{ project.id }}">Edit</a>
+        <form action="/project/delete/{{ project.id }}" method="POST">
+          {% csrf_token %}
+          <button type="submit" onclick="return confirm('Delete this project?')">Delete</button>
+        </form>
+        {% else %}
+        <button>📑 Save</button>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="card comments-card standalone">
+    <div class="label">Comments {{ comments.count }}</div>
+    <div class="comment-input">
+      <input type="text" id="comment-input" placeholder="Add a comment…">
+      <button id="comment-btn" data-id="{{ project.id }}">Send</button>
+    </div>
+    <small id="comment-error" style="color:#dc2626;"></small>
+    <div id="comments-list">
+      {% for c in comments %}
+      <div class="comment">
+        <div class="av" style="background:{% cycle '#1d2c6b' '#c2410c' '#1e3a8a' '#166534' %};">{{ c.user.initials }}</div>
+        <div class="bubble">
+          <b>{{ c.user.full_name }}</b><span class="time">@{{ c.user.handle }} · {{ c.created_at|timesince }}</span>
+          <p>{{ c.content }}</p>
+        </div>
+      </div>
+      {% empty %}
+      <p style="color:#9aa1b5; font-size:13px;" id="no-comments">No comments yet. Be the first!</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+const CSRF = '{{ csrf_token }}';
+
+document.getElementById('like-btn').addEventListener('click', function() {
+  fetch(`/api/projects/${this.dataset.id}/like/`, {
+    method:'POST', headers:{'X-CSRFToken':CSRF,'Content-Type':'application/json'}
+  }).then(r=>r.json()).then(data => {
+    document.getElementById('like-count').textContent = data.likes_count;
+    this.classList.toggle('liked', data.liked);
+    this.innerHTML = (data.liked ? '❤️' : '🤍') + ` <span id="like-count">${data.likes_count}</span>`;
+  });
+});
+
+document.getElementById('share-btn').addEventListener('click', function() {
+  fetch(`/api/projects/${this.dataset.id}/share/`, {
+    method:'POST', headers:{'X-CSRFToken':CSRF,'Content-Type':'application/json'}
+  }).then(r=>r.json()).then(data => {
+    document.getElementById('share-count').textContent = data.share_count;
+    navigator.clipboard.writeText(window.location.href);
+    this.innerHTML = `✅ Copied <span id="share-count">${data.share_count}</span>`;
+    setTimeout(()=>{ this.innerHTML = `🔗 <span id="share-count">${data.share_count}</span>`; }, 1800);
+  });
+});
+
+document.getElementById('comment-btn').addEventListener('click', function() {
+  const pid = this.dataset.id;
+  const input = document.getElementById('comment-input');
+  const content = input.value.trim();
+  if (!content) {
+    document.getElementById('comment-error').textContent = 'Comment cannot be empty.';
+    return;
+  }
+  fetch(`/api/projects/${pid}/comment/`, {
+    method:'POST', headers:{'X-CSRFToken':CSRF,'Content-Type':'application/json'},
+    body: JSON.stringify({content})
+  }).then(r=>r.json()).then(data => {
+    if (data.success) {
+      document.getElementById('comment-error').textContent = '';
+      input.value = '';
+      const nc = document.getElementById('no-comments');
+      if (nc) nc.remove();
+      const html = `
+      <div class="comment">
+        <div class="av" style="background:#1d2c6b;">${data.initials}</div>
+        <div class="bubble">
+          <b>${data.user_name}</b><span class="time">@${data.user_handle} · now</span>
+          <p>${data.content}</p>
+        </div>
+      </div>`;
+      document.getElementById('comments-list').insertAdjacentHTML('beforeend', html);
+    }
+  });
+});
+</script>
+</body>
+</html>
