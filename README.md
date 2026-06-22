@@ -251,3 +251,13 @@ print("Seed complete! Login: dalya@gmail.com / password123")
 **Dalya Muhaisen**
 Software Engineer · Gaza, Palestine 🇵🇸
 Axsos Academy — Full-Stack Django Project, 2026
+
+
+<img width="1891" height="910" alt="Screenshot (374)" src="https://github.com/user-attachments/assets/c6285966-16da-4364-9449-5d8ce1fd66b1" />
+
+<img width="1896" height="936" alt="Screenshot (375)" src="https://github.com/user-attachments/assets/6dfa26b3-102c-4bdc-9767-0fdb21199b11" />
+
+<img width="1905" height="885" alt="Screenshot (376)" src="https://github.com/user-attachments/assets/17fdb54d-afd9-4189-bd68-c3cdf309fe79" />
+<img width="1842" height="873" alt="Screenshot (379)" src="https://github.com/user-attachments/assets/01114140-77f1-467a-b370-cbac3586c6b7" />
+<img width="1888" height="916" alt="Screenshot (378)" src="https://github.com/user-attachments/assets/1a254ac7-86d5-4a7c-8878-695f5648f7f1" />
+<img width="1885" height="939" alt="Screenshot (377)" src="https://github.com/user-attachments/assets/0ed7287b-101a-40b8-86b6-5a34b8632efb" />
